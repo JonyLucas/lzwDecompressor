@@ -6,7 +6,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        new LzwDecompressor("test.txt").run();
+        new LzwDecompressor("src\\examples\\test.txt").run();
 
         //byte b = (byte) 'î';
         //byte b2 = (byte) 140;
