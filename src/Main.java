@@ -1,12 +1,10 @@
 import controller.LzwDecompressor;
 
-import java.io.*;
-
 public class Main {
 
     public static void main(String[] args) {
 
-        new LzwDecompressor("src\\examples\\test.txt").run();
+        new LzwDecompressor("src\\examples\\imagem1Compressor", "src\\examples\\imagem1Decompressor.png").run();
 
         //byte b = (byte) 'î';
         //byte b2 = (byte) 140;
