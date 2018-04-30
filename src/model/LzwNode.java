@@ -1,6 +1,8 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 
 public class LzwNode
 {
@@ -18,21 +20,26 @@ public class LzwNode
 
     public int getSymbol() { return symbol; }
 
-    public String getCode()
+    public ArrayList<Integer>  getCode()
     {
-        String code = "";
+        ArrayList<Integer> symbols = new ArrayList<Integer>();
+        //String code = "";
         LzwNode node = this;
 
-        code += (char) node.getSymbol();
+        //code += (char) node.getSymbol();
+        symbols.add(node.getSymbol());
 
         while(node.getParent().getSymbol() != -1)
         {
             node = node.getParent();
-            code = (char) node.getSymbol() + code;
+            //code = (char) node.getSymbol() + code;
+            symbols.add(node.getSymbol());
+
         }
 
-        System.out.println("Codigo lido: " + code);
-        return code;
+        Collections.reverse(symbols);
+
+        return symbols;
     }
 
     public int getIndex(){ return index; }
@@ -133,4 +140,6 @@ public class LzwNode
 
         return node.getSymbol();
     }
+
+
 }
