@@ -1,6 +1,7 @@
 package controller;
 
 import infra.LzwReader;
+import infra.LzwWriter;
 import model.LzwNode;
 import model.LzwTree;
 
@@ -10,14 +11,16 @@ public class LzwDecompressor
     private LzwNode currentNode = null;
 
     private LzwReader lzwReader;
+    private LzwWriter lzwWriter;
 
     private int[] bufferReader;
     private static final int NBYTES = 2;
     private int nBits = 8;
 
-    public LzwDecompressor(String filePath)
+    public LzwDecompressor(String fileInputPath, String fileOutputPath)
     {
-        lzwReader = new LzwReader(filePath);
+        lzwReader = new LzwReader(fileInputPath);
+        lzwWriter = new LzwWriter(fileOutputPath);
         bufferReader = new int[NBYTES];
 
     }
@@ -30,8 +33,7 @@ public class LzwDecompressor
     {
         try {
             createDictionary(lzwReader.getDictionarySize(), true);
-            String code = readAndSearch();
-            System.out.println("Codigo decodificado: " + code);
+            readAndSearch();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -73,27 +75,25 @@ public class LzwDecompressor
         if(bufferReader[0] == -1) return "";
 
         int index = getIndex(indexBR);
+        if(Math.pow(2, nBits) <= dictionary.getSize()+1) nBits++;
 
         while(true)
         {
-            if(searchAndAddSymbol(index))
-            {
-                index = getIndex(indexBR);
+            searchAndAddSymbol(index);
+            lzwWriter.write(currentNode.getCode());
+            if(Math.pow(2, nBits) <= dictionary.getSize()+1) nBits++;
 
-                if (indexBR[2] == 1){
-                    code += currentNode.getCode(); //Adiciona o índice do ultimo símbolo lido
-                    break;
+            index = getIndex(indexBR);
+            if (indexBR[2] == 1){
+                //code += currentNode.getCode(); //Adiciona o índice do ultimo símbolo lido
+                //lzwWriter.write(currentNode.getCode());
+                if(index != -1)lzwWriter.write(dictionary.getNodeByIndex(index).getCode());
+                break;
 
-                }
-            } else {
-                code += currentNode.getCode();
-                currentNode = null;
             }
         }
 
-
         return code;
-
     }
 
     /**
@@ -110,16 +110,16 @@ public class LzwDecompressor
     private boolean searchAndAddSymbol(int index){
 
         if(currentNode == null) {
+            //System.out.println(index);
             currentNode = dictionary.getNodeByIndex(index);
+            currentNode.getDescription();
             System.out.println(currentNode.getDescription());
             return true;
-        } else if(currentNode.findIndexSymbol(index) != -1){
-            currentNode = currentNode.getNodeByIndex(index);
-            System.out.println(currentNode.getDescription());
-            return true;
-        } else {
+        }
+        else {
             dictionary.addSymbol(currentNode, index);
-            if(Math.pow(2, nBits)-1 <= dictionary.getSize()) nBits++;
+            currentNode = dictionary.getNodeByIndex(index);
+            currentNode.getDescription();
             System.out.println(currentNode.getDescription());
             return false;
         }
@@ -140,6 +140,7 @@ public class LzwDecompressor
     {
         int index = 0;
 
+        if(bufferReader[indexBR[1]] == -1) return -1;
         for(int i = nBits-1; i >= 0; i--)
         {
             index += getBit(bufferReader[indexBR[1]], indexBR[0])*Math.pow(2, i);
@@ -157,6 +158,7 @@ public class LzwDecompressor
                 if(bufferReader[indexBR[1]] == -1)
                 {
                     indexBR[2] = 1;
+                    if(i>0) index = -1;
                     break;
                 }
 
@@ -164,6 +166,7 @@ public class LzwDecompressor
             }
         }
 
+        //System.out.println("NB: " + nBits + " index: " + index);
         return index;
     }
 
