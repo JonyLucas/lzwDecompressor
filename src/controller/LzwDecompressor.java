@@ -109,15 +109,13 @@ public class LzwDecompressor
 
         if(currentNode == null) {
             currentNode = dictionary.getNodeByIndex(index);
-            currentNode.getDescription();
-            System.out.println(currentNode.getDescription());
+            //System.out.println(currentNode.getDescription());
             return true;
         }
         else {
             dictionary.addSymbol(currentNode, index);
             currentNode = dictionary.getNodeByIndex(index);
-            currentNode.getDescription();
-            System.out.println(currentNode.getDescription());
+            //System.out.println(currentNode.getDescription());
             return false;
         }
 
