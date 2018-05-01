@@ -23,16 +23,13 @@ public class LzwNode
     public ArrayList<Integer>  getCode()
     {
         ArrayList<Integer> symbols = new ArrayList<Integer>();
-        //String code = "";
         LzwNode node = this;
 
-        //code += (char) node.getSymbol();
         symbols.add(node.getSymbol());
 
         while(node.getParent().getSymbol() != -1)
         {
             node = node.getParent();
-            //code = (char) node.getSymbol() + code;
             symbols.add(node.getSymbol());
 
         }

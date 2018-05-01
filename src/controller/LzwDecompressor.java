@@ -85,8 +85,6 @@ public class LzwDecompressor
 
             index = getIndex(indexBR);
             if (indexBR[2] == 1){
-                //code += currentNode.getCode(); //Adiciona o índice do ultimo símbolo lido
-                //lzwWriter.write(currentNode.getCode());
                 if(index != -1)lzwWriter.write(dictionary.getNodeByIndex(index).getCode());
                 break;
 
@@ -110,7 +108,6 @@ public class LzwDecompressor
     private boolean searchAndAddSymbol(int index){
 
         if(currentNode == null) {
-            //System.out.println(index);
             currentNode = dictionary.getNodeByIndex(index);
             currentNode.getDescription();
             System.out.println(currentNode.getDescription());
@@ -166,7 +163,6 @@ public class LzwDecompressor
             }
         }
 
-        //System.out.println("NB: " + nBits + " index: " + index);
         return index;
     }
 

@@ -36,7 +36,6 @@ public class LzwWriter
 
             for(Integer c: chars)
             {
-                //System.out.println("Byte: " + c);
                 writer.write(c);
             }
 
